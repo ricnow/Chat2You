@@ -4,6 +4,8 @@ import { StyleSheet, View, Alert } from 'react-native'
 import { Button, Input } from 'react-native-elements'
 import { Session } from '@supabase/supabase-js'
 import { useAuth } from '../../../providers/AuthProvider'
+import  Avatar from '../../../components/Avatar'
+import { ScrollView } from 'react-native-gesture-handler'
 
 export default function ProfileScreen() {
   
@@ -87,7 +89,17 @@ export default function ProfileScreen() {
   }
 
   return (
-    <View style={styles.container}>
+      <ScrollView style={styles.container}>
+        <View style={{ alignItems: 'center'}}>
+            <Avatar
+                size={200}
+                url={avatarUrl}
+                onUpload={(url: string) => {
+                setAvatarUrl(url)
+                updateProfile({ username, website, avatar_url: url, full_name: fullname })
+                }}
+            />
+      </View>
       <View style={[styles.verticallySpaced, styles.mt20]}>
         <Input label="Email" value={session?.user?.email} disabled />
       </View>
@@ -101,10 +113,11 @@ export default function ProfileScreen() {
         <Input label="Website" value={website || ''} onChangeText={(text) => setWebsite(text)} />
       </View>
       
+      
 
       <View style={[styles.verticallySpaced, styles.mt20]}>
         <Button
-          title={loading ? 'Atualizando ...' : 'Atualizar'}
+          title={loading ? 'Atualizando...' : 'Atualizar'}
           onPress={() => updateProfile({ username, website, avatar_url: avatarUrl, full_name: fullname })}
           disabled={loading}
         />
@@ -113,7 +126,7 @@ export default function ProfileScreen() {
       <View style={styles.verticallySpaced}>
         <Button title="Sair" onPress={() => supabase.auth.signOut()} />
       </View>
-    </View>
+    </ScrollView>
   )
 }
 
